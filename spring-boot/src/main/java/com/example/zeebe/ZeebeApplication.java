@@ -18,22 +18,19 @@ public class ZeebeApplication {
 		SpringApplication.run(ZeebeApplication.class, args);
 	}
 
-	@ZeebeWorker(type = "log")
-	public void shipParcel(final JobClient client, final ActivatedJob job) {
+	@ZeebeWorker(type = "ocr-on-claim-attachments")
+	public void ocrOnClaimAttachments(final JobClient client, final ActivatedJob job) {
+		logJob(job);
+		client.newCompleteCommand(job.getKey()).send().join();
+	}
+
+	@ZeebeWorker(type = "create-proposals")
+	public void createProposals(final JobClient client, final ActivatedJob job) {
 		logJob(job);
 		client.newCompleteCommand(job.getKey()).send().join();
 	}
 
 	private static void logJob(final ActivatedJob job) {
-//		log.info(
-//				"complete job\n>>> [type: {}, key: {}, element: {}, workflow instance: {}]\n{deadline; {}]\n[headers: {}]\n[variables: {}]",
-//				job.getType(),
-//				job.getKey(),
-//				job.getElementId(),
-//				job.getWorkflowInstanceKey(),
-//				Instant.ofEpochMilli(job.getDeadline()),
-//				job.getCustomHeaders(),
-//				job.getVariables());
 		System.out.println(job);
 	}
 }
